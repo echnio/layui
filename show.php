@@ -1,5 +1,5 @@
 <?php
-$domain = "http://" . $_SERVER['SERVER_NAME'] . "/";
+$domain = "https://" . $_SERVER['SERVER_NAME'] . "/";
 $data   = array_filter(explode(PHP_EOL, file_get_contents(dirname(__FILE__) . "/code")));
 $lists  = [];
 foreach ($data as $key => $value) {
