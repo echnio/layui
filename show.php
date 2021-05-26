@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>e袋洗</title>
-    <link rel="stylesheet" href="https://res.layui.com/layui/dist/css/layui.css">
+    <link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css">
     <style>
         .noselect {
             -webkit-touch-callout: none;
@@ -86,7 +86,7 @@
     </form>
 </div>
 <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
-<script src="https://res.layui.com/layui/dist/layui.js"></script>
+<script src="https://www.layuicdn.com/layui/layui.js"></script>
 <script>
     function copyText(text) {
         var textarea = document.createElement("input");//创建input对象
