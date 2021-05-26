@@ -110,7 +110,7 @@
 
     layui.use('form', function () {
         layui.form.on('submit(formDemo)', function (data) {
-            $.post("<?php echo $domain; ?>add?user=<?php echo $loginUser;?>", {params: JSON.stringify(data.field)},
+            $.post("<?php echo $domain; ?>index.php?method=add?user=<?php echo $loginUser;?>", {params: JSON.stringify(data.field)},
                 function (ret) {
                     if (JSON.parse(ret).status) {
                         window.location.reload();

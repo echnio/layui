@@ -1,8 +1,6 @@
 <?php
-$method      = strtolower($_SERVER['REQUEST_METHOD']);
-$requestPath = parse_url($_SERVER['REQUEST_URI']);
-
-$path      = isset($requestPath['path']) ? $requestPath['path'] : '';
+$method    = strtolower($_SERVER['REQUEST_METHOD']);
+$func      = isset($_REQUEST['method']) ? $_REQUEST['method'] : "";
 $loginUser = isset($_REQUEST['user']) ? $_REQUEST['user'] : "";
 $isAdmin   = $loginUser === md5('zhangrenping');
 
@@ -17,6 +15,7 @@ foreach ($userList as $v) {
         $userName = $v;
     }
 }
+
 if (empty($userName)) {
     exit(json_encode(['status' => false, 'msg' => '无权限']));
 }
@@ -34,7 +33,7 @@ foreach ($data as $key => $value) {
     $lists[$key]['status']       = $status;
 }
 
-if (strpos($path, 'add') !== false) {
+if ($method === 'post' && $func === 'add') {
     $params       = isset($_REQUEST['params']) ? $_REQUEST['params'] : "";
     $params       = json_decode($params, true);
     $code         = isset($params['code']) ? $params['code'] : "";
