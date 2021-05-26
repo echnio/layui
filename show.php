@@ -18,10 +18,9 @@
 </head>
 <body>
 <div class="layui-container">
-    <div class="layui-progress" style="margin: 15px 0 30px;">
-        <div class="layui-progress-bar" lay-percent="100%"></div>
-    </div>
-
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+        <legend><?php echo $userName; ?></legend>
+    </fieldset>
     <table class="layui-table">
         <colgroup>
             <col width="50">
@@ -123,11 +122,28 @@
     });
     $(".copy").click(function () {
         var code = $(this).attr('attr');
-        layer.confirm('复制之后将自动删除,', function (index) {
-            var flag = copyText(code);
-            layer.msg(flag ? "复制成功！" : "复制失败！");
-            layer.msg("复制成功【" + code + "】");
+        var cs = copyText(code);
+        var flag = cs ? "复制成功！" : "复制失败！"
+        layer.msg(flag+"【" + code + "】", {
+            time: 1500,
+            function(index){
+                //layer.close(index);
+                alert(location.href)
+            }
         });
+
+        //layer.confirm('复制之后将自动删除,', function (index) {
+        //    $.post("<?php //echo $domain; ?>//index.php?method=copy&user=<?php //echo $loginUser;?>//", {code: code},
+        //        function (ret) {
+        //            if (JSON.parse(ret).status) {
+        //
+        //
+        //            } else {
+        //                alert(JSON.parse(ret).msg)
+        //            }
+        //        });
+        //    return false;
+        //});
     });
 </script>
 </body>

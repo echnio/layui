@@ -34,6 +34,12 @@ foreach ($data as $key => $value) {
     $lists[$key]['status']       = $status;
 }
 
+if ($method === 'post' && $func === 'copy') {
+    exit(json_encode(['status' => true, 'msg' => '']));
+}
+if ($method === 'post' && $func === 'delete') {
+    exit(json_encode(['status' => true, 'msg' => '']));
+}
 if ($method === 'post' && $func === 'add') {
     $params       = isset($_REQUEST['params']) ? $_REQUEST['params'] : "";
     $params       = json_decode($params, true);
