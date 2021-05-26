@@ -1,6 +1,7 @@
 <?php
-$data  = array_filter(explode(PHP_EOL, file_get_contents("./code")));
-$lists = [];
+$domain = "http://" . $_SERVER['SERVER_NAME'] . "/";
+$data   = array_filter(explode(PHP_EOL, file_get_contents(dirname(__FILE__) . "/code")));
+$lists  = [];
 foreach ($data as $key => $value) {
     [$denomination, $code, $status] = array_filter(explode("-", $value));
     $lists[$key]['denomination'] = $denomination;
@@ -14,7 +15,7 @@ foreach ($data as $key => $value) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>测试 - layui</title>
-    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="<?php echo $domain; ?>layui/css/layui.css">
     <style>
         .noselect {
             -webkit-touch-callout: none;
@@ -92,8 +93,8 @@ foreach ($data as $key => $value) {
         </div>
     </form>
 </div>
-<script src="layui/jquery.js"></script>
-<script src="layui/layui.js"></script>
+<script src="<?php echo $domain; ?>layui/jquery.js"></script>
+<script src="<?php echo $domain; ?>layui/layui.js"></script>
 <script>
     function copyText(text) {
         var textarea = document.createElement("input");//创建input对象
@@ -122,7 +123,6 @@ foreach ($data as $key => $value) {
             return false;
         });
     });
-    var host = window.location.protocol + "//" + window.location.host;/*获取当前域名*/
     $(".copy").click(function () {
         var flag = copyText($(this).attr('attr'));
         layer.msg(flag ? "复制成功！" : "复制失败！");
