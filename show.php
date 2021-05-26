@@ -1,20 +1,9 @@
-<?php
-$domain = "https://" . $_SERVER['SERVER_NAME'] . "/";
-$data   = array_filter(explode(PHP_EOL, file_get_contents(dirname(__FILE__) . "/code")));
-$lists  = [];
-foreach ($data as $key => $value) {
-    [$denomination, $code, $status] = array_filter(explode("-", $value));
-    $lists[$key]['denomination'] = $denomination;
-    $lists[$key]['code']         = $code;
-    $lists[$key]['status']       = $status;
-}
-?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>测试 - layui</title>
+    <title>e袋洗</title>
     <link rel="stylesheet" href="<?php echo $domain; ?>layui/css/layui.css">
     <style>
         .noselect {
@@ -41,8 +30,8 @@ foreach ($data as $key => $value) {
         </colgroup>
         <thead>
         <tr>
-            <th>昵称</th>
-            <th>加入时间</th>
+            <th>面额</th>
+            <th>卡密</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -56,8 +45,12 @@ foreach ($data as $key => $value) {
                 <td>
                     <?php if ($value['status'] == 1) { ?>
                         <a href="javascript:;" class="copy" attr="<?php echo $value['code']; ?>">复制</a>
+                    <?php } else {
+                        echo $value['status'];
+                    } ?>
+                    <?php if ($isAdmin) { ?>
+                        <a href="javascript:;" class="delte" attr="<?php echo $value['code']; ?>">删除</a>
                     <?php } ?>
-                    <a href="javascript:;" class="delte" attr="<?php echo $value['code']; ?>">删除</a>
                 </td>
             </tr>
         <?php } ?>
@@ -70,16 +63,15 @@ foreach ($data as $key => $value) {
     </div>
     <form class="layui-form" action="">
         <div class="layui-form-item">
-            <label class="layui-form-label">输入框</label>
+            <label class="layui-form-label">卡密</label>
             <div class="layui-input-block">
-                <input type="text" name="title" required lay-verify="required" placeholder="请输入标题"
-                       autocomplete="off" class="layui-input">
+                <input type="number" name="code" required lay-verify="required" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">选择框</label>
+            <label class="layui-form-label">面额</label>
             <div class="layui-input-block">
-                <select name="city" lay-verify="required">
+                <select name="denomination" lay-verify="required">
                     <option value='200'>200</option>
                     <option value='500'>500</option>
                 </select>
@@ -117,24 +109,25 @@ foreach ($data as $key => $value) {
     }
 
     layui.use('form', function () {
-        var form = layui.form;
-        form.on('submit(formDemo)', function (data) {
-            layer.msg(JSON.stringify(data.field));
+        layui.form.on('submit(formDemo)', function (data) {
+            $.post("<?php echo $domain; ?>add?user=<?php echo $loginUser;?>", {params: JSON.stringify(data.field)},
+                function (ret) {
+                    if (JSON.parse(ret).status) {
+                        window.location.reload();
+                    } else {
+                        alert(JSON.parse(ret).msg)
+                    }
+                });
             return false;
         });
     });
     $(".copy").click(function () {
-        var flag = copyText($(this).attr('attr'));
-        layer.msg(flag ? "复制成功！" : "复制失败！");
-        // layer.confirm('复制之后将自动删除,', function (index) {
-        //     // var text = document.getElementById("text").innerText;
-        //     // var input = document.getElementById("input");
-        //     // input.value = text; // 修改文本框的内容
-        //     // input.select(); // 选中文本
-        //     // document.execCommand("copy"); // 执行浏览器复制命令
-        //     //
-        //     layer.msg("复制成功!" + $(this).attr("attr"));
-        // });
+        var code = $(this).attr('attr');
+        layer.confirm('复制之后将自动删除,', function (index) {
+            var flag = copyText(code);
+            layer.msg(flag ? "复制成功！" : "复制失败！");
+            layer.msg("复制成功【" + code + "】");
+        });
     });
 </script>
 </body>
