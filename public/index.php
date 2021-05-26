@@ -5,9 +5,9 @@ $loginUser = isset($_REQUEST['user']) ? $_REQUEST['user'] : "";
 $isAdmin   = $loginUser === md5('zhangrenping');
 
 $userList = [
-    'zhangrenping',
-    'wangxiaojun',
-    'lihongyan'
+    'zhangrenping' => '张仁平',
+    'wangxiaojun'  => '王晓军',
+    'lihongyan'    => '李红艳'
 ];
 $userName = null;
 foreach ($userList as $v) {
@@ -28,9 +28,10 @@ $data   = array_filter(explode(PHP_EOL, file_get_contents($codePath)));
 $lists  = [];
 foreach ($data as $key => $value) {
     [$denomination, $code, $status] = array_filter(explode("-", $value));
+    $tname                       = isset($userList[$status]) ? $userList[$status] : $status;
     $lists[$key]['denomination'] = $denomination;
     $lists[$key]['code']         = $code;
-    $lists[$key]['status']       = $status;
+    $lists[$key]['status']       = $tname;
 }
 
 if ($method === 'post' && $func === 'add') {
