@@ -35,20 +35,27 @@
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($lists as $value) { ?>
+        <?php foreach ($lists as $code => $value) { ?>
+            <?php if (! $isAdmin && $value['status'] != 1) {
+                continue;
+            } ?>
             <tr>
-                <td><?php echo $value['denomination']; ?></td>
+                <td>
+                    <b style='color: <?php echo $value['denomination'] == 200 ? "red" : "green"; ?>;'>
+                        <?php echo $value['denomination']; ?>
+                    </b>
+                </td>
                 <td class="noselect">
-                    <?php echo $value['status'] == 1 ? $value['code'] : "<s>" . $value['code'] . "</s>"; ?>
+                    <?php echo $value['status'] == 1 ? $code : "<s>" . $value['plaintext'] . "</s>"; ?>
                 </td>
                 <td>
                     <?php if ($value['status'] == 1) { ?>
-                        <a href="javascript:;" class="copy" attr="<?php echo $value['code']; ?>">复制</a>
+                        <a href="javascript:;" class="copy" attr="<?php echo $code; ?>">复制</a>
                     <?php } else {
-                        echo $value['status'];
+                        echo "<b style='color: red;'>{$value['status']}</b>";
                     } ?>
                     <?php if ($isAdmin) { ?>
-                        <a href="javascript:;" class="delte" attr="<?php echo $value['code']; ?>">删除</a>
+                        <a href="javascript:;" class="delete" attr="<?php echo $code; ?>">删除</a>
                     <?php } ?>
                 </td>
             </tr>
@@ -87,26 +94,6 @@
 <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://www.layuicdn.com/layui/layui.js"></script>
 <script>
-    function copyText(text) {
-        var textarea = document.createElement("input");//创建input对象
-        var currentFocus = document.activeElement;//当前获得焦点的元素
-        document.body.appendChild(textarea);//添加元素
-        textarea.value = text;
-        textarea.focus();
-        if (textarea.setSelectionRange)
-            textarea.setSelectionRange(0, textarea.value.length);//获取光标起始位置到结束位置
-        else
-            textarea.select();
-        try {
-            var flag = document.execCommand("copy");//执行复制
-        } catch (eo) {
-            var flag = false;
-        }
-        document.body.removeChild(textarea);//删除元素
-        currentFocus.focus();
-        return flag;
-    }
-
     layui.use('form', function () {
         layui.form.on('submit(formDemo)', function (data) {
             $.post("<?php echo $domain; ?>index.php?method=add&user=<?php echo $loginUser;?>", {params: JSON.stringify(data.field)},
@@ -120,30 +107,45 @@
             return false;
         });
     });
+    $(".delete").click(function () {
+        var code = $(this).attr('attr');
+        layer.confirm('删除后不可恢复', function (index) {
+            $.post("<?php echo $domain; ?>index.php?method=delete&user=<?php echo $loginUser;?>", {code: code},
+                function (ret) {
+                    window.location.reload();
+                });
+        });
+    });
     $(".copy").click(function () {
         var code = $(this).attr('attr');
-        var cs = copyText(code);
-        var flag = cs ? "复制成功！" : "复制失败！"
-        layer.msg(flag+"【" + code + "】", {
-            time: 1500,
-            function(index){
-                //layer.close(index);
-                alert(location.href)
-            }
+        layer.confirm('复制之后将自动删除', function (index) {
+            $.post("<?php echo $domain; ?>index.php?method=copy&user=<?php echo $loginUser;?>", {code: code},
+                function (ret) {
+                    if (JSON.parse(ret).status) {
+                        layer.prompt({
+                                btn: ["确认"],
+                                title: '剪切确认成功之后关闭',
+                                closeBtn: false,
+                                btnAlign: 'c',
+                                value: JSON.parse(ret).msg,
+                                yes: function (index, layero) {
+                                    // 获取文本框输入的值
+                                    var value = layero.find(".layui-layer-input").val();
+                                    if (value) {
+                                        alert("请剪切卡密：" + value);
+                                    } else {
+                                        window.location.reload();
+                                    }
+                                }
+                            }
+                        );
+                    } else {
+                        alert(JSON.parse(ret).msg)
+                        window.location.reload();
+                    }
+                });
+            return false;
         });
-
-        //layer.confirm('复制之后将自动删除,', function (index) {
-        //    $.post("<?php //echo $domain; ?>//index.php?method=copy&user=<?php //echo $loginUser;?>//", {code: code},
-        //        function (ret) {
-        //            if (JSON.parse(ret).status) {
-        //
-        //
-        //            } else {
-        //                alert(JSON.parse(ret).msg)
-        //            }
-        //        });
-        //    return false;
-        //});
     });
 </script>
 </body>
