@@ -23,7 +23,7 @@ $codePath = dirname(dirname(__FILE__)) . "/code";
 if (! file_exists($codePath)) {
     file_put_contents($codePath, '');
 }
-$domain = "http://" . $_SERVER['SERVER_NAME'] . "/";
+$domain = "https://" . $_SERVER['SERVER_NAME'] . "/";
 $data   = array_filter(explode(PHP_EOL, file_get_contents($codePath)));
 $lists  = [];
 foreach ($data as $key => $value) {

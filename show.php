@@ -63,37 +63,40 @@
         </tbody>
     </table>
 </div>
-<div class="layui-container">
-    <div class="layui-progress" style="margin: 15px 0 30px;">
-        <div class="layui-progress-bar" lay-percent="100%"></div>
+<?php if ($isAdmin) { ?>
+    <div class="layui-container">
+        <div class="layui-progress" style="margin: 15px 0 30px;">
+            <div class="layui-progress-bar" lay-percent="100%"></div>
+        </div>
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">卡密</label>
+                <div class="layui-input-block">
+                    <input type="tel" name="code" required lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">面额</label>
+                <div class="layui-input-block">
+                    <select name="denomination" lay-verify="required">
+                        <option value='200'>200</option>
+                        <option value='500'>500</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
     </div>
-    <form class="layui-form" action="">
-        <div class="layui-form-item">
-            <label class="layui-form-label">卡密</label>
-            <div class="layui-input-block">
-                <input type="tel" name="code" required lay-verify="required" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">面额</label>
-            <div class="layui-input-block">
-                <select name="denomination" lay-verify="required">
-                    <option value='200'>200</option>
-                    <option value='500'>500</option>
-                </select>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-            </div>
-        </div>
-    </form>
-</div>
+<?php } ?>
 <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://www.layuicdn.com/layui/layui.js"></script>
 <script>
+    <?php if ($isAdmin) { ?>
     layui.use('form', function () {
         layui.form.on('submit(formDemo)', function (data) {
             $.post("<?php echo $domain; ?>index.php?method=add&user=<?php echo $loginUser;?>", {params: JSON.stringify(data.field)},
@@ -116,6 +119,7 @@
                 });
         });
     });
+    <?php } ?>
     $(".copy").click(function () {
         var code = $(this).attr('attr');
         layer.confirm('复制之后将自动删除', function (index) {
