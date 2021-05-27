@@ -86,7 +86,7 @@ if ($isAdmin && $method === 'post' && $func === 'add') {
     if (empty($code)) {
         exit(json_encode(['status' => false, 'msg' => '卡密不能为空']));
     }
-    if (in_array($code, array_keys($lists))) {
+    if (in_array(md5($code), array_keys($lists))) {
         exit(json_encode(['status' => false, 'msg' => '卡密已存在']));
     }
     file_put_contents($codePath, "\n{$denomination}-{$code}-1", FILE_APPEND);
