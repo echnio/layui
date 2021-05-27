@@ -46,7 +46,11 @@
                     </b>
                 </td>
                 <td class="noselect">
-                    <?php echo $value['status'] == 1 ? substr($code, 0, 10) : "<s>" . $value['plaintext'] . "</s>"; ?>
+                    <?php if ($value['status'] == 1) { ?>
+                        <?php echo $isAdmin ? $value['plaintext'] : substr($code, 0, 10); ?>
+                    <?php } else { ?>
+                        <?php echo "<s>" . $value['plaintext'] . "</s>"; ?>
+                    <?php } ?>
                 </td>
                 <td>
                     <?php if ($value['status'] == 1) { ?>
