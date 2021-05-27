@@ -46,7 +46,7 @@
                     </b>
                 </td>
                 <td class="noselect">
-                    <?php echo $value['status'] == 1 ? $code : "<s>" . $value['plaintext'] . "</s>"; ?>
+                    <?php echo $value['status'] == 1 ? substr($code, 0, 10) : "<s>" . $value['plaintext'] . "</s>"; ?>
                 </td>
                 <td>
                     <?php if ($value['status'] == 1) { ?>
