@@ -2,12 +2,10 @@
 $method    = strtolower($_SERVER['REQUEST_METHOD']);
 $func      = isset($_REQUEST['method']) ? $_REQUEST['method'] : "";
 $loginUser = isset($_REQUEST['user']) ? $_REQUEST['user'] : "";
-$isAdmin   = $loginUser === md5('张仁平');
+$isAdmin   = $loginUser === md5('王晓军');
 
 $userList = [
-    '张仁平',
-    '王晓军',
-    '李红艳'
+    '王晓军'
 ];
 $userName = null;
 foreach ($userList as $v) {
