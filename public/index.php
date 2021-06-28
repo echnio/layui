@@ -2,16 +2,16 @@
 $method    = strtolower($_SERVER['REQUEST_METHOD']);
 $func      = isset($_REQUEST['method']) ? $_REQUEST['method'] : "";
 $loginUser = isset($_REQUEST['user']) ? $_REQUEST['user'] : "";
-$isAdmin   = $loginUser === '王晓军';
+$isAdmin   = $loginUser === 1;
 
 $userList = [
-    '王晓军',
-    '李红艳',
-    '张仁平'
+    1 => '王晓军',
+    2 => '李红艳',
+    3 => '张仁平'
 ];
 $userName = null;
-foreach ($userList as $v) {
-    if ($loginUser === $v) {
+foreach ($userList as $key => $v) {
+    if ($loginUser === $key) {
         $userName = $v;
     }
 }
