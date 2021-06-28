@@ -2,14 +2,14 @@
 $method    = strtolower($_SERVER['REQUEST_METHOD']);
 $func      = isset($_REQUEST['method']) ? $_REQUEST['method'] : "";
 $loginUser = isset($_REQUEST['user']) ? $_REQUEST['user'] : "";
-$isAdmin   = $loginUser === md5('王晓军');
+$isAdmin   = $loginUser === '王晓军';
 
 $userList = [
     '王晓军'
 ];
 $userName = null;
 foreach ($userList as $v) {
-    if ($loginUser === md5($v)) {
+    if ($loginUser === $v) {
         $userName = $v;
     }
 }
