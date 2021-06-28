@@ -2,6 +2,7 @@
 $method    = strtolower($_SERVER['REQUEST_METHOD']);
 $func      = isset($_REQUEST['method']) ? $_REQUEST['method'] : "";
 $loginUser = isset($_REQUEST['user']) ? $_REQUEST['user'] : "";
+$loginUser = intval($loginUser);
 $isAdmin   = $loginUser === 1;
 
 $userList = [
@@ -9,6 +10,7 @@ $userList = [
     2 => '李红艳',
     3 => '张仁平'
 ];
+
 $userName = null;
 foreach ($userList as $key => $v) {
     if ($loginUser === $key) {
