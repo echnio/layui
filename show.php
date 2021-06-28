@@ -130,31 +130,48 @@
             $.post("<?php echo $domain; ?>index.php?method=copy&user=<?php echo $loginUser;?>", {code: code},
                 function (ret) {
                     if (JSON.parse(ret).status) {
-                        layer.prompt({
-                                btn: ["确认"],
-                                title: '剪切确认成功之后关闭',
-                                closeBtn: false,
-                                btnAlign: 'c',
-                                value: JSON.parse(ret).msg,
-                                yes: function (index, layero) {
-                                    // 获取文本框输入的值
-                                    var value = layero.find(".layui-layer-input").val();
-                                    if (value) {
-                                        alert("请剪切卡密：" + value);
-                                    } else {
-                                        window.location.reload();
-                                    }
-                                }
-                            }
-                        );
+                        copyToClipboard(JSON.parse(ret).msg)
                     } else {
                         alert(JSON.parse(ret).msg)
-                        window.location.reload();
                     }
+                    window.location.reload();
                 });
             return false;
         });
     });
+
+    //复制到剪贴板
+    function copyToClipboard(text) {
+        if (text.indexOf('-') !== -1) {
+            let arr = text.split('-');
+            text = arr[0] + arr[1];
+        }
+        var textArea = document.createElement("textarea");
+        textArea.style.position = 'fixed';
+        textArea.style.top = '0';
+        textArea.style.left = '0';
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+        textArea.style.padding = '0';
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+        textArea.style.background = 'transparent';
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? '成功复制到剪贴板' : '';
+            if (!successful) {
+                parent.layer.alert('该浏览器不支持点击复制到剪贴板');
+            }
+            $('textarea').hide();
+        } catch (err) {
+            alert('该浏览器不支持点击复制到剪贴板');
+        }
+    }
 </script>
 </body>
 </html>
