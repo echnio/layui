@@ -5,7 +5,9 @@ $loginUser = isset($_REQUEST['user']) ? $_REQUEST['user'] : "";
 $isAdmin   = $loginUser === '王晓军';
 
 $userList = [
-    '王晓军'
+    '王晓军',
+    '李红艳',
+    '张仁平'
 ];
 $userName = null;
 foreach ($userList as $v) {
