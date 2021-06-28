@@ -36,33 +36,32 @@
         </thead>
         <tbody>
         <?php foreach ($lists as $code => $value) { ?>
-            <?php if (! $isAdmin && $value['status'] != 1) {
-                continue;
-            } ?>
-            <tr>
-                <td>
-                    <b style='color: <?php echo $value['denomination'] == 200 ? "red" : "green"; ?>;'>
-                        <?php echo $value['denomination']; ?>
-                    </b>
-                </td>
-                <td class="noselect">
-                    <?php if ($value['status'] == 1) { ?>
-                        <?php echo $isAdmin ? $value['plaintext'] : substr($code, 0, 10); ?>
-                    <?php } else { ?>
-                        <?php echo "<s>" . $value['plaintext'] . "</s>"; ?>
-                    <?php } ?>
-                </td>
-                <td>
-                    <?php if ($value['status'] == 1) { ?>
-                        <a href="javascript:;" class="copy" attr="<?php echo $code; ?>">复制</a>
-                    <?php } else {
-                        echo "<b style='color: red;'>{$value['status']}</b>";
-                    } ?>
-                    <?php if ($isAdmin) { ?>
-                        <a href="javascript:;" class="delete" attr="<?php echo $code; ?>">删除</a>
-                    <?php } ?>
-                </td>
-            </tr>
+            <?php if ($isAdmin || $value['status'] == 1 || $value['status'] == $userName) { ?>
+                <tr>
+                    <td>
+                        <b style='color: <?php echo $value['denomination'] == 200 ? "red" : "green"; ?>;'>
+                            <?php echo $value['denomination']; ?>
+                        </b>
+                    </td>
+                    <td class="<?php echo $value['status'] == 1 ? "noselect" : "" ?>">
+                        <?php if ($value['status'] == 1) { ?>
+                            <?php echo $isAdmin ? $value['plaintext'] : '复制后展示'; ?>
+                        <?php } else { ?>
+                            <?php echo "<s>" . $value['plaintext'] . "</s>"; ?>
+                        <?php } ?>
+                    </td>
+                    <td>
+                        <?php if ($value['status'] == 1) { ?>
+                            <a href="javascript:;" class="copy" attr="<?php echo $code; ?>">复制</a>
+                        <?php } else {
+                            echo "<b style='color: red;'>{$value['status']}</b>";
+                        } ?>
+                        <?php if ($isAdmin) { ?>
+                            <a href="javascript:;" class="delete" attr="<?php echo $code; ?>">删除</a>
+                        <?php } ?>
+                    </td>
+                </tr>
+            <?php } ?>
         <?php } ?>
         </tbody>
     </table>
@@ -130,7 +129,9 @@
             $.post("<?php echo $domain; ?>index.php?method=copy&user=<?php echo $loginUser;?>", {code: code},
                 function (ret) {
                     if (JSON.parse(ret).status) {
-                        copyToClipboard(JSON.parse(ret).msg)
+                        if (!copyTxt(JSON.parse(ret).msg)) {
+                            alert("复制失败，请在列表手动复制【" + JSON.parse(ret).msg + "】");
+                        }
                     } else {
                         alert(JSON.parse(ret).msg)
                     }
@@ -139,38 +140,45 @@
             return false;
         });
     });
+</script>
 
-    //复制到剪贴板
-    function copyToClipboard(text) {
-        if (text.indexOf('-') !== -1) {
-            let arr = text.split('-');
-            text = arr[0] + arr[1];
+<script>
+    // function sleep(miliseconds) {
+    //     var currentTime = new Date().getTime();
+    //     while (currentTime + miliseconds >= new Date().getTime()) {
+    //     }
+    // }
+    //原生js实现复制内容到剪切板，兼容pc、移动端（支持Safari浏览器）
+    function copyTxt(text) {
+        if (typeof document.execCommand !== "function") {
+            return false;
         }
-        var textArea = document.createElement("textarea");
-        textArea.style.position = 'fixed';
-        textArea.style.top = '0';
-        textArea.style.left = '0';
-        textArea.style.width = '2em';
-        textArea.style.height = '2em';
-        textArea.style.padding = '0';
-        textArea.style.border = 'none';
-        textArea.style.outline = 'none';
-        textArea.style.boxShadow = 'none';
-        textArea.style.background = 'transparent';
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-
-        try {
-            var successful = document.execCommand('copy');
-            var msg = successful ? '成功复制到剪贴板' : '';
-            if (!successful) {
-                parent.layer.alert('该浏览器不支持点击复制到剪贴板');
-            }
-            $('textarea').hide();
-        } catch (err) {
-            alert('该浏览器不支持点击复制到剪贴板');
+        var dom = document.createElement("textarea");
+        dom.value = text;
+        dom.setAttribute('style', 'display: block;width: 1px;height: 1px;');
+        document.body.appendChild(dom);
+        dom.select();
+        var result = document.execCommand('copy');
+        document.body.removeChild(dom);
+        if (result) {
+            return true;
         }
+        if (typeof document.createRange !== "function") {
+            return false;
+        }
+        var range = document.createRange();
+        var div = document.createElement('div');
+        div.innerHTML = text;
+        div.setAttribute('style', 'height: 1px;fontSize: 1px;overflow: hidden;');
+        document.body.appendChild(div);
+        range.selectNode(div);
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            selection.removeAllRanges();
+        }
+        selection.addRange(range);
+        document.execCommand('copy');
+        return true;
     }
 </script>
 </body>

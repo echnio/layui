@@ -3,12 +3,12 @@ $method    = strtolower($_SERVER['REQUEST_METHOD']);
 $func      = isset($_REQUEST['method']) ? $_REQUEST['method'] : "";
 $loginUser = isset($_REQUEST['user']) ? $_REQUEST['user'] : "";
 $loginUser = intval($loginUser);
-$isAdmin   = $loginUser === 1;
+$isAdmin   = $loginUser === 10101;
 
 $userList = [
-    1 => '王晓军',
-    2 => '李红艳',
-    3 => '张仁平'
+    10101 => '王晓军',
+    20202 => '李红艳',
+    30303 => '张仁平'
 ];
 
 $userName = null;
@@ -27,13 +27,21 @@ if (! file_exists($codePath)) {
 }
 $domain = "https://" . $_SERVER['SERVER_NAME'] . "/";
 $data   = array_filter(explode(PHP_EOL, file_get_contents($codePath)));
-$lists  = [];
+$tmp    = [];
 foreach ($data as $key => $value) {
     [$denomination, $code, $status] = array_filter(explode("-", $value));
-    $lists[md5($code)]['denomination'] = $denomination;
-    $lists[md5($code)]['status']       = $status;
-    $lists[md5($code)]['plaintext']    = $code;
+    $tmp[md5($code)]['denomination'] = $denomination;
+    $tmp[md5($code)]['status']       = $status;
+    $tmp[md5($code)]['plaintext']    = $code;
 }
+$lists = [];
+foreach ($tmp as $key => $value) {
+    if ($value['status'] == 1) {
+        $lists[$key] = $value;
+        unset($tmp[$key]);
+    }
+}
+$lists = array_merge($lists,$tmp);
 
 if ($method === 'post' && $func === 'copy') {
     $code     = isset($_REQUEST['code']) ? trim($_REQUEST['code']) : "w";
