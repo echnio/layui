@@ -125,60 +125,43 @@
     <?php } ?>
     $(".copy").click(function () {
         var code = $(this).attr('attr');
-        layer.confirm('复制之后将自动删除', function (index) {
-            $.post("<?php echo $domain; ?>index.php?method=copy&user=<?php echo $loginUser;?>", {code: code},
-                function (ret) {
+        var nowCopyValue = '';
+        if (confirm("复制之后将自动删除")) {
+            $.ajax({
+                type: "post",
+                url: "<?php echo $domain; ?>index.php?method=copy&user=<?php echo $loginUser;?>",
+                data: "code=" + code,
+                async: false,
+                success: function (ret) {
                     if (JSON.parse(ret).status) {
-                        if (!copyTxt(JSON.parse(ret).msg)) {
-                            alert("复制失败，请在列表手动复制【" + JSON.parse(ret).msg + "】");
-                        }
+                        nowCopyValue = JSON.parse(ret).msg;
                     } else {
                         alert(JSON.parse(ret).msg)
                     }
-                    window.location.reload();
-                });
-            return false;
-        });
+                }
+            });
+            if (nowCopyValue !== '') {
+                copyText(nowCopyValue, ".copy")
+            }
+            window.location.reload();
+        }
     });
 </script>
-
+<script type='text/javascript' src="https://cdn.staticfile.org/clipboard.js/1.5.15/clipboard.min.js"></script>
 <script>
-    // function sleep(miliseconds) {
-    //     var currentTime = new Date().getTime();
-    //     while (currentTime + miliseconds >= new Date().getTime()) {
-    //     }
-    // }
-    //原生js实现复制内容到剪切板，兼容pc、移动端（支持Safari浏览器）
-    function copyTxt(text) {
-        if (typeof document.execCommand !== "function") {
-            return false;
-        }
-        var dom = document.createElement("textarea");
-        dom.value = text;
-        dom.setAttribute('style', 'display: block;width: 1px;height: 1px;');
-        document.body.appendChild(dom);
-        dom.select();
-        var result = document.execCommand('copy');
-        document.body.removeChild(dom);
-        if (result) {
-            return true;
-        }
-        if (typeof document.createRange !== "function") {
-            return false;
-        }
-        var range = document.createRange();
-        var div = document.createElement('div');
-        div.innerHTML = text;
-        div.setAttribute('style', 'height: 1px;fontSize: 1px;overflow: hidden;');
-        document.body.appendChild(div);
-        range.selectNode(div);
-        const selection = window.getSelection();
-        if (selection.rangeCount > 0) {
-            selection.removeAllRanges();
-        }
-        selection.addRange(range);
-        document.execCommand('copy');
-        return true;
+    function copyText(copyValue, id) {
+        var clipboard = new Clipboard(id, {
+            text: function () {
+                return copyValue
+            }
+        });
+        //复制成功后的反馈
+        clipboard.on("success", function (e) {
+            layer.msg('复制成功')
+        });
+        clipboard.on('error', function (e) {
+            layer.msg('复制成功')
+        });
     }
 </script>
 </body>
