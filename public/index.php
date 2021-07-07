@@ -90,8 +90,8 @@ if ($isAdmin && $method === 'post' && $func === 'add') {
     $denomination = intval($denomination);
 
     $code = trim(strval($code));
-    if (! in_array($denomination, [200, 500])) {
-        exit(json_encode(['status' => false, 'msg' => '面额只能是200或者500']));
+    if (! in_array($denomination, [200, 500, 1000])) {
+        exit(json_encode(['status' => false, 'msg' => '面额只能是200、500、1000']));
     }
     if (empty($code)) {
         exit(json_encode(['status' => false, 'msg' => '卡密不能为空']));
