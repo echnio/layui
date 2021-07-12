@@ -3,7 +3,7 @@ $method    = strtolower($_SERVER['REQUEST_METHOD']);
 $func      = isset($_REQUEST['method']) ? $_REQUEST['method'] : "";
 $loginUser = isset($_REQUEST['user']) ? $_REQUEST['user'] : "";
 $loginUser = intval($loginUser);
-$isAdmin   = $loginUser === 10101;
+$isAdmin   = $loginUser === 30303;
 
 $userList = [
     10101 => '王晓军',
