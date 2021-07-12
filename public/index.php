@@ -41,7 +41,7 @@ foreach ($tmp as $key => $value) {
         unset($tmp[$key]);
     }
 }
-$lists = array_merge($lists,$tmp);
+$lists = array_merge($lists, $tmp);
 
 if ($method === 'post' && $func === 'copy') {
     $code     = isset($_REQUEST['code']) ? trim($_REQUEST['code']) : "w";
